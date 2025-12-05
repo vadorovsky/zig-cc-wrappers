@@ -29,8 +29,8 @@ resolves to the desired executable before invoking the wrappers.
 
 ## Releases
 
-GitHub releases automatically publish tarballs containing both wrappers built
-for:
+GitLab and GitHub automatically publish release tarballs containing both
+wrappers built for:
 
 - `zig-cc-wrappers-aarch64-linux-musl.tar.gz`
 - `zig-cc-wrappers-riscv64-linux-musl.tar.gz`
@@ -38,3 +38,12 @@ for:
 
 Download the archive matching your target, extract, and place the files on your
 `PATH` if you prefer not to build them yourself.
+
+## GitLab CI
+
+A matching pipeline lives in `.gitlab-ci.yml` for GitLab mirrors. It runs the
+same three-target matrix using the Gentoo musl container, publishes artifacts
+for every pipeline, and creates GitLab releases on tags using `glab`
+(`gitlab/glab`). No extra token is needed: the release job authenticates with
+`glab auth login --job-token "$CI_JOB_TOKEN"` and uploads the generated
+tarballs as release assets automatically.

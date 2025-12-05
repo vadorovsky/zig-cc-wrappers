@@ -1,0 +1,39 @@
+stages:
+  - build
+  - release
+
+variables:
+  ZIG_VERSION: "0.15.2"
+
+build-musl:
+  stage: build
+  image: docker.io/gentoo/stage3:musl-llvm
+  parallel:
+    matrix:
+      - TARGET: x86_64-linux-musl
+      - TARGET: aarch64-linux-musl
+      - TARGET: riscv64-linux-musl
+  script:
+    - curl -fSLO "https://ziglang.org/download/${ZIG_VERSION}/zig-x86_64-linux-${ZIG_VERSION}.tar.xz"
+    - tar -xf "zig-x86_64-linux-${ZIG_VERSION}.tar.xz"
+    - export PATH="$PWD/zig-x86_64-linux-${ZIG_VERSION}:$PATH"
+    - zig version
+    - zig build -Dtarget=${TARGET} -Doptimize=ReleaseFast
+    - tar -C zig-out/bin -czf "zig-cc-wrappers-${TARGET}.tar.gz" zig-cc zig-c++
+  artifacts:
+    paths:
+      - zig-cc-wrappers-${TARGET}.tar.gz
+    expire_in: 1 week
+
+release:
+  stage: release
+  image: gitlab/glab:latest
+  needs:
+    - job: build-musl
+      artifacts: true
+  rules:
+    - if: '$CI_COMMIT_TAG'
+  script:
+    - glab auth login --job-token "$CI_JOB_TOKEN"
+    - glab release create "$CI_COMMIT_TAG" --notes-file /dev/null || glab release delete "$CI_COMMIT_TAG" --yes && glab release create "$CI_COMMIT_TAG" --notes-file /dev/null
+    - for asset in zig-cc-wrappers-*.tar.gz; do glab release upload "$CI_COMMIT_TAG" "$asset"; done

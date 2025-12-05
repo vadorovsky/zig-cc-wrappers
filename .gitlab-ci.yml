@@ -28,6 +28,8 @@ build-musl:
 release:
   stage: release
   image: gitlab/glab:latest
+  variables:
+    GITLAB_RELEASE_ASSETS_USE_PACKAGE_REGISTRY: "true"
   needs:
     - job: build-musl
       artifacts: true

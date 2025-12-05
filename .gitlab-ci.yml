@@ -36,5 +36,5 @@ release:
   rules:
     - if: '$CI_COMMIT_TAG'
   script:
-    - glab auth login --job-token "$CI_JOB_TOKEN"
+    - glab auth login --token "$GITLAB_RELEASE_PAT"
     - glab release create "$CI_COMMIT_TAG" ./*.tar.gz

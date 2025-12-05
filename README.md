@@ -26,3 +26,15 @@ while you still get Zig's cross-compiling toolchains.
 
 If you need to use a specific Zig binary, just adjust your `PATH` so that `zig`
 resolves to the desired executable before invoking the wrappers.
+
+## Releases
+
+GitHub releases automatically publish tarballs containing both wrappers built
+for:
+
+- `zig-cc-wrappers-aarch64-linux-musl.tar.gz`
+- `zig-cc-wrappers-riscv64-linux-musl.tar.gz`
+- `zig-cc-wrappers-x86_64-linux-musl.tar.gz`
+
+Download the archive matching your target, extract, and place the files on your
+`PATH` if you prefer not to build them yourself.

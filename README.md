@@ -38,12 +38,3 @@ wrappers built for:
 
 Download the archive matching your target, extract, and place the files on your
 `PATH` if you prefer not to build them yourself.
-
-## GitLab CI
-
-A matching pipeline lives in `.gitlab-ci.yml` for GitLab mirrors. It runs the
-same three-target matrix using the Gentoo musl container, publishes artifacts
-for every pipeline, and creates GitLab releases on tags using `glab`
-(`gitlab/glab`). No extra token is needed: the release job authenticates with
-`glab auth login --job-token "$CI_JOB_TOKEN"` and uploads the generated
-tarballs as release assets automatically.

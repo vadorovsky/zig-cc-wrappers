@@ -1,0 +1,28 @@
+# Zig CC wrappers
+
+This repository provides two tiny Zig executables, `zig-cc` and `zig-c++`, that
+simply forward every argument to `zig cc` or `zig c++`. They exist so tools such
+as CMake can pretend they are interacting with standalone `cc`/`c++` binaries
+while you still get Zig's cross-compiling toolchains.
+
+## Usage
+
+1. Build and install the wrappers (by default they land in `zig-out/bin/`):
+   ```sh
+   zig build install
+   ```
+2. Make sure that directory is on your `PATH` _before_ the system compilers, e.g.:
+   ```sh
+   export PATH="/path/to/zig-cc-wrappers/zig-out/bin:$PATH"
+   ```
+3. Point your build system at the wrappers. For CMake, from a clean build tree:
+   ```sh
+   cmake -S . -B build \
+     -DCMAKE_C_COMPILER=zig-cc \
+     -DCMAKE_CXX_COMPILER=zig-c++
+   ```
+4. Configure or build as usual. Every argument CMake forwards will be proxied to
+   the real `zig cc`/`zig c++`.
+
+If you need to use a specific Zig binary, just adjust your `PATH` so that `zig`
+resolves to the desired executable before invoking the wrappers.
